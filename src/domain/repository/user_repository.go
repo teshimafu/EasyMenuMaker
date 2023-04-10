@@ -7,6 +7,7 @@ import (
 
 type IUserRepository interface {
 	FindByID(id *value.UserID) (*entity.User, error)
+	Find(input *entity.User) (*entity.User, error)
 	FindAll() ([]*entity.User, error)
 	Create(*entity.User) (*entity.User, error)
 }
