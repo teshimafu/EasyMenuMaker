@@ -1,11 +1,15 @@
 package main
 
 import (
-	"github.com/teshimafu/lazyPM/src/cmd"
+	"fmt"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/teshimafu/lazyPM/migrations"
+	"github.com/teshimafu/lazyPM/src/infrastructure/router"
 )
 
 func main() {
@@ -17,5 +21,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	cmd.Start(db)
+
+	e := echo.New()
+
+	// middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	// initialize router
+	router.Init(e, db)
+
+	// start server
+	fmt.Println("Server started on port 8080")
+	e.Logger.Fatal(e.Start(":8080"))
 }
