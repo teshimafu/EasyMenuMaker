@@ -27,6 +27,17 @@ func (ut *userTable) FindByID(id *value.UserID) (*entity.User, error) {
 	return toUserEntity(user)
 }
 
+func (ut *userTable) Find(input *entity.User) (*entity.User, error) {
+	var user *model.User
+	if err := ut.db.Where(
+		"name = ?", input.Name().Value()).
+		Or("email = ?", input.Email().Value()).
+		First(&user).Error; err != nil || user == nil {
+		return nil, err
+	}
+	return toUserEntity(user)
+}
+
 func (ut *userTable) FindAll() ([]*entity.User, error) {
 	var users []*model.User
 	if err := ut.db.Find(&users).Error; err != nil {

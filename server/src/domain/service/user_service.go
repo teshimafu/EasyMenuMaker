@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/teshimafu/lazyPM/server/src/domain/entity"
 	"github.com/teshimafu/lazyPM/server/src/domain/factory"
 	"github.com/teshimafu/lazyPM/server/src/domain/repository"
@@ -24,6 +26,9 @@ func (us *UserService) CreateUser(name, email string) (*entity.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	if _, err := us.repo.Find(user); err == nil {
+		return nil, fmt.Errorf("user already exists")
+	}
 	return us.repo.Create(user)
 }
 
@@ -32,10 +37,5 @@ func (s *UserService) GetUser(id *valueobject.UserID) (*entity.User, error) {
 }
 
 func (s *UserService) GetAllUsers() ([]*entity.User, error) {
-	users, err := s.repo.FindAll()
-	if err != nil {
-		return nil, err
-	}
-
-	return users, nil
+	return s.repo.FindAll()
 }
