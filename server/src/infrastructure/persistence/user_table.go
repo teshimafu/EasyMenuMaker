@@ -21,7 +21,15 @@ func NewUserTable(db *gorm.DB) repository.IUserRepository {
 
 func (ut *userTable) FindByID(id *value.UserID) (*entity.User, error) {
 	var user *model.User
-	if err := ut.db.Where("user_id = ?", id.Buffer()).Find(&user).Error; err != nil {
+	if err := ut.db.Where("user_id = ?", id.Buffer()).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return toUserEntity(user)
+}
+
+func (ut *userTable) FindByEmail(email *value.Email) (*entity.User, error) {
+	var user *model.User
+	if err := ut.db.Where("email = ?", email.Value()).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return toUserEntity(user)
@@ -57,14 +65,15 @@ func (ut *userTable) Create(user *entity.User) (*entity.User, error) {
 
 func toUserModel(user *entity.User) *model.User {
 	return &model.User{
-		UserID: user.ID().Buffer(),
-		Name:   user.Name().Value(),
-		Email:  user.Email().Value(),
+		UserID:   user.ID().Buffer(),
+		Name:     user.Name().Value(),
+		Email:    user.Email().Value(),
+		Password: user.Password().Hash(),
 	}
 }
 
 func toUserEntity(user *model.User) (*entity.User, error) {
-	return entity.NewUser(string(user.UserID), user.Name, user.Email)
+	return entity.NewUser(string(user.UserID), user.Name, user.Email, user.Password)
 
 }
 
