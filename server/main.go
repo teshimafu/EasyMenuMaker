@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/teshimafu/lazyPM/src/cmd"
+	"github.com/teshimafu/lazyPM/server/src/cmd"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	"github.com/teshimafu/lazyPM/migrations"
+	"github.com/teshimafu/lazyPM/server/migrations"
 )
 
 func main() {

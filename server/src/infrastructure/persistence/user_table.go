@@ -3,10 +3,10 @@ package persistence
 import (
 	"gorm.io/gorm"
 
-	"github.com/teshimafu/lazyPM/src/domain/entity"
-	"github.com/teshimafu/lazyPM/src/domain/repository"
-	value "github.com/teshimafu/lazyPM/src/domain/valueobject"
-	"github.com/teshimafu/lazyPM/src/infrastructure/model"
+	"github.com/teshimafu/lazyPM/server/src/domain/entity"
+	"github.com/teshimafu/lazyPM/server/src/domain/repository"
+	value "github.com/teshimafu/lazyPM/server/src/domain/valueobject"
+	"github.com/teshimafu/lazyPM/server/src/infrastructure/model"
 )
 
 type userTable struct {

@@ -2,7 +2,7 @@ package factory
 
 import (
 	"github.com/google/uuid"
-	"github.com/teshimafu/lazyPM/src/domain/entity"
+	"github.com/teshimafu/lazyPM/server/src/domain/entity"
 )
 
 type UserFactory interface {

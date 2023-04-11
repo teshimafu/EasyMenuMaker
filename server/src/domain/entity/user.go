@@ -1,6 +1,6 @@
 package entity
 
-import value "github.com/teshimafu/lazyPM/src/domain/valueobject"
+import value "github.com/teshimafu/lazyPM/server/src/domain/valueobject"
 
 type User struct {
 	id    *value.UserID

@@ -2,12 +2,12 @@ package router
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/teshimafu/lazyPM/src/domain/factory"
-	domain_service "github.com/teshimafu/lazyPM/src/domain/service"
-	"github.com/teshimafu/lazyPM/src/infrastructure/persistence"
-	"github.com/teshimafu/lazyPM/src/interfaces/handler"
-	"github.com/teshimafu/lazyPM/src/interfaces/presenter"
-	"github.com/teshimafu/lazyPM/src/usecase/service"
+	"github.com/teshimafu/lazyPM/server/src/domain/factory"
+	domain_service "github.com/teshimafu/lazyPM/server/src/domain/service"
+	"github.com/teshimafu/lazyPM/server/src/infrastructure/persistence"
+	"github.com/teshimafu/lazyPM/server/src/interfaces/handler"
+	"github.com/teshimafu/lazyPM/server/src/interfaces/presenter"
+	"github.com/teshimafu/lazyPM/server/src/usecase/service"
 	"gorm.io/gorm"
 )
 

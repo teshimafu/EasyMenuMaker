@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/teshimafu/lazyPM/src/domain/valueobject"
-	"github.com/teshimafu/lazyPM/src/interfaces/presenter"
-	"github.com/teshimafu/lazyPM/src/usecase/service"
+	"github.com/teshimafu/lazyPM/server/src/domain/valueobject"
+	"github.com/teshimafu/lazyPM/server/src/interfaces/presenter"
+	"github.com/teshimafu/lazyPM/server/src/usecase/service"
 )
 
 type UserHandler struct {

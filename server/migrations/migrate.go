@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/teshimafu/lazyPM/src/infrastructure/model"
+	"github.com/teshimafu/lazyPM/server/src/infrastructure/model"
 	"gorm.io/gorm"
 )
 

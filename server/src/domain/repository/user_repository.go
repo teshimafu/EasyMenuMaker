@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/teshimafu/lazyPM/src/domain/entity"
-	value "github.com/teshimafu/lazyPM/src/domain/valueobject"
+	"github.com/teshimafu/lazyPM/server/src/domain/entity"
+	value "github.com/teshimafu/lazyPM/server/src/domain/valueobject"
 )
 
 type IUserRepository interface {

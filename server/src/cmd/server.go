@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 
-	"github.com/teshimafu/lazyPM/src/infrastructure/router"
+	"github.com/teshimafu/lazyPM/server/src/infrastructure/router"
 )
 
 func Start(db *gorm.DB) {

@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/teshimafu/lazyPM/src/domain/entity"
-	"github.com/teshimafu/lazyPM/src/domain/factory"
-	"github.com/teshimafu/lazyPM/src/domain/repository"
-	"github.com/teshimafu/lazyPM/src/domain/valueobject"
+	"github.com/teshimafu/lazyPM/server/src/domain/entity"
+	"github.com/teshimafu/lazyPM/server/src/domain/factory"
+	"github.com/teshimafu/lazyPM/server/src/domain/repository"
+	"github.com/teshimafu/lazyPM/server/src/domain/valueobject"
 )
 
 type UserService struct {

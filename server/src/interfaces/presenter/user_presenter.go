@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/teshimafu/lazyPM/src/domain/entity"
+	"github.com/teshimafu/lazyPM/server/src/domain/entity"
 )
 
 type User struct {
