@@ -14,6 +14,11 @@ type SignupForm struct {
 	Password string `json:"password" validate:"required"`
 }
 
+type SigninForm struct {
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
 type AuthHandler struct {
 	userService   *service.UserService
 	userPresenter *presenter.UserPresenter
@@ -38,4 +43,20 @@ func (a *AuthHandler) PostSignup(c echo.Context) error {
 	}
 
 	return a.userPresenter.ResponseUser(c, createdUser)
+}
+
+func (a *AuthHandler) PostSignin(c echo.Context) error {
+	req := &SigninForm{}
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	token, err := a.userService.SignIn(req.Email, req.Password)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, err)
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"token": token,
+	})
 }

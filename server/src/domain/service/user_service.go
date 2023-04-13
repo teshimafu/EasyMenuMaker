@@ -11,6 +11,10 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	ErrInvalidPassword = errors.New("invalid password")
+)
+
 type UserService struct {
 	repo    repository.IUserRepository
 	factory factory.UserFactory
@@ -53,12 +57,12 @@ func (s *UserService) GetUserByAuth(email, password string) (*entity.User, error
 	} else if err != nil {
 		return nil, err
 	}
-	userPassword, err := valueobject.HashPassword(password)
+	userPassword, err := valueobject.NewPassword([]byte(password))
 	if err != nil {
 		return nil, err
 	}
-	if err := userPassword.ComparePassword(user.Password()); err != nil {
-		return nil, err
+	if err := user.Password().ComparePassword(userPassword); err != nil {
+		return nil, ErrInvalidPassword
 	}
 	return user, nil
 }

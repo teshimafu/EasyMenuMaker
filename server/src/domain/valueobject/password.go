@@ -24,6 +24,6 @@ func (p *Password) Hash() []byte {
 	return p.hash
 }
 
-func (p *Password) ComparePassword(password *Password) error {
-	return bcrypt.CompareHashAndPassword(p.Hash(), password.Hash())
+func (p *Password) ComparePassword(rawPassword *Password) error {
+	return bcrypt.CompareHashAndPassword(p.Hash(), rawPassword.Hash())
 }
