@@ -15,10 +15,6 @@ func NewAuthService(repo repository.ITokenRepository) *AuthService {
 	}
 }
 
-func (s *AuthService) GenerateJWT(id string) (*value.Token, error) {
-	userID, err := value.NewUserID(id)
-	if err != nil {
-		return nil, err
-	}
+func (s *AuthService) GenerateToken(userID *value.UserID) (*value.Token, error) {
 	return s.repo.GenerateToken(userID)
 }

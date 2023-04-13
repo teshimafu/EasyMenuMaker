@@ -42,7 +42,7 @@ func (u *UserService) SignIn(email, password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	token, err := u.authService.GenerateJWT(user.ID().Value())
+	token, err := u.authService.GenerateToken(user.ID())
 	if err != nil {
 		return "", err
 	}
