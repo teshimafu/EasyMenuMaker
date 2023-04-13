@@ -1,11 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"os"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/teshimafu/lazyPM/server/migrations"
@@ -13,13 +15,21 @@ import (
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		panic("Error loading .env file")
+	}
+	if key := os.Getenv("SECRET_KEY"); key == "" {
+		panic("Error loading SECRET_KEY")
+	}
+
 	db, err := gorm.Open(sqlite.Open("lazyPM.db"), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		panic("db access error")
 	}
 	err = migrations.Migrate(db)
 	if err != nil {
-		panic(err)
+		panic("db migrate error")
 	}
 
 	e := echo.New()
@@ -32,6 +42,6 @@ func main() {
 	router.Init(e, db)
 
 	// start server
-	fmt.Println("Server started on port 8080")
+	log.Println("Server started on port 8080")
 	e.Logger.Fatal(e.Start(":8080"))
 }

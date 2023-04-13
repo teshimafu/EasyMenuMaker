@@ -4,6 +4,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const (
+	bcryptCost = 15
+)
+
 type Password struct {
 	value string
 }
@@ -13,7 +17,7 @@ func NewPassword(password string) (*Password, error) {
 }
 
 func HashPassword(password string) (*Password, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcryptCost)
 	if err != nil {
 		return nil, err
 	}
