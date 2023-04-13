@@ -6,4 +6,5 @@ import (
 
 type ITokenRepository interface {
 	GenerateToken(userID *value.UserID) (*value.Token, error)
+	GetUserID(token *value.Token) (*value.UserID, error)
 }

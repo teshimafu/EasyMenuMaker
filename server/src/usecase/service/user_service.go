@@ -1,6 +1,8 @@
 package service
 
 import (
+	"log"
+
 	"github.com/teshimafu/lazyPM/server/src/domain/entity"
 	"github.com/teshimafu/lazyPM/server/src/domain/service"
 	value "github.com/teshimafu/lazyPM/server/src/domain/valueobject"
@@ -22,7 +24,10 @@ func (u *UserService) GetUser(id *value.UserID) (*entity.User, error) {
 	return u.userService.GetUser(id)
 }
 
-func (u *UserService) GetUsers() ([]*entity.User, error) {
+func (u *UserService) GetUsers(token *value.Token) ([]*entity.User, error) {
+	// wip
+	id, _ := u.authService.GetUserID(token)
+	log.Println(id.Value())
 	return u.userService.GetAllUsers()
 }
 
