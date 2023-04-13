@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -29,7 +28,7 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 	}
 	user, err := h.userService.GetUser(userID)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "internal server error"})
+		return c.JSON(http.StatusNotFound, map[string]string{"error": "user is not found"})
 	}
 
 	return h.userPresenter.ResponseUser(c, user)
@@ -42,18 +41,4 @@ func (h *UserHandler) GetUsers(c echo.Context) error {
 	}
 
 	return h.userPresenter.ResponseUsers(c, users)
-}
-
-func (h *UserHandler) PostUser(c echo.Context) error {
-	user := &presenter.User{}
-	if err := c.Bind(user); err != nil {
-		return err
-	}
-	fmt.Println(user)
-	createdUser, err := h.userService.CreateUser(user.Name, user.Email)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
-	}
-
-	return h.userPresenter.ResponseUser(c, createdUser)
 }

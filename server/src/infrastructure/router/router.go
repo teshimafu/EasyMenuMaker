@@ -12,18 +12,27 @@ import (
 )
 
 func Init(e *echo.Echo, db *gorm.DB) {
-	userRoute(e, db)
-}
-
-func userRoute(e *echo.Echo, db *gorm.DB) {
+	// repository
 	userTable := persistence.NewUserTable(db)
+
+	// factory
 	userFactory := factory.NewUserFactory()
+
+	// domain service
 	userDomainService := domain_service.NewUserService(userTable, userFactory)
+
+	// application service
 	userService := service.NewUserService(userDomainService)
+
+	// presenter
 	userPresenter := presenter.NewUserPresenter()
+
+	// handler
 	userHandler := handler.NewUserHandler(userService, userPresenter)
+	authHandler := handler.NewAuthHandler(userService, userPresenter)
 
 	e.GET("/users/:id", userHandler.GetUser)
 	e.GET("/users", userHandler.GetUsers)
-	e.POST("/users", userHandler.PostUser)
+
+	e.POST("/signup", authHandler.PostSignup)
 }
