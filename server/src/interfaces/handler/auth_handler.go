@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/teshimafu/lazyPM/server/src/domain/factory"
+	"github.com/teshimafu/lazyPM/server/src/domain/valueobject"
 	"github.com/teshimafu/lazyPM/server/src/interfaces/presenter"
 	"github.com/teshimafu/lazyPM/server/src/usecase/service"
 )
@@ -22,22 +24,28 @@ type SigninForm struct {
 type AuthHandler struct {
 	userService   *service.UserService
 	userPresenter *presenter.UserPresenter
+	userFactory   factory.UserFactory
 }
 
-func NewAuthHandler(userService *service.UserService, userPresenter *presenter.UserPresenter) *AuthHandler {
+func NewAuthHandler(userService *service.UserService, userPresenter *presenter.UserPresenter, userFactory factory.UserFactory) *AuthHandler {
 	return &AuthHandler{
 		userService:   userService,
 		userPresenter: userPresenter,
+		userFactory:   userFactory,
 	}
 }
 
 func (a *AuthHandler) PostSignup(c echo.Context) error {
-	user := &SignupForm{}
-	if err := c.Bind(user); err != nil {
+	userCmd := &SignupForm{}
+	if err := c.Bind(userCmd); err != nil {
 		return err
 	}
+	user, err := a.userFactory.CreateUser(userCmd.Name, userCmd.Email, userCmd.Password)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
 
-	createdUser, err := a.userService.CreateUser(user.Name, user.Email, user.Password)
+	createdUser, err := a.userService.Signup(user)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
@@ -50,8 +58,16 @@ func (a *AuthHandler) PostSignin(c echo.Context) error {
 	if err := c.Bind(req); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
+	email, err := valueobject.NewEmail(req.Email)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	password, err := valueobject.NewPassword(req.Password)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
 
-	token, err := a.userService.SignIn(req.Email, req.Password)
+	token, err := a.userService.Signin(email, password)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, err)
 	}

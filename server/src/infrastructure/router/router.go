@@ -18,10 +18,10 @@ func Init(e *echo.Echo, db *gorm.DB) {
 	tokenGenerator := auth.NewJWTGenerator()
 
 	// factory
-	userFactory := factory.NewUserFactory()
+	userFactory := factory.NewUserFactory(userTable)
 
 	// domain service
-	userDomainService := domain_service.NewUserService(userTable, userFactory)
+	userDomainService := domain_service.NewUserService(userTable)
 	authDomainService := domain_service.NewAuthService(tokenGenerator)
 
 	// application service
@@ -32,9 +32,8 @@ func Init(e *echo.Echo, db *gorm.DB) {
 
 	// handler
 	userHandler := handler.NewUserHandler(userService, userPresenter)
-	authHandler := handler.NewAuthHandler(userService, userPresenter)
+	authHandler := handler.NewAuthHandler(userService, userPresenter, userFactory)
 
-	e.GET("/users/:id", userHandler.GetUser)
 	e.GET("/users", userHandler.GetUsers)
 
 	e.POST("/signup", authHandler.PostSignup)

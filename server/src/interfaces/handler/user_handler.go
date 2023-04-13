@@ -20,16 +20,6 @@ func NewUserHandler(userService *service.UserService, userPresenter *presenter.U
 	}
 }
 
-func (h *UserHandler) GetUser(c echo.Context) error {
-	id := c.Param("id")
-	user, err := h.userService.GetUser(id)
-	if err != nil {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "user is not found"})
-	}
-
-	return h.userPresenter.ResponseUser(c, user)
-}
-
 func (h *UserHandler) GetUsers(c echo.Context) error {
 	users, err := h.userService.GetUsers()
 	if err != nil {

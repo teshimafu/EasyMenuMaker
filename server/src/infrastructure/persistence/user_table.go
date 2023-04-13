@@ -65,10 +65,10 @@ func (ut *userTable) Create(user *entity.User) (*entity.User, error) {
 
 func toUserModel(user *entity.User) *model.User {
 	return &model.User{
-		UserID:   user.ID().Buffer(),
+		UserID:   user.ID().Value(),
 		Name:     user.Name().Value(),
 		Email:    user.Email().Value(),
-		Password: user.Password().Hash(),
+		Password: user.Password().Value(),
 	}
 }
 

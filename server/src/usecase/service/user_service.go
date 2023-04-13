@@ -1,10 +1,9 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/teshimafu/lazyPM/server/src/domain/entity"
 	"github.com/teshimafu/lazyPM/server/src/domain/service"
+	value "github.com/teshimafu/lazyPM/server/src/domain/valueobject"
 )
 
 type UserService struct {
@@ -19,7 +18,7 @@ func NewUserService(userService *service.UserService, authService *service.AuthS
 	}
 }
 
-func (u *UserService) GetUser(id string) (*entity.User, error) {
+func (u *UserService) GetUser(id *value.UserID) (*entity.User, error) {
 	return u.userService.GetUser(id)
 }
 
@@ -27,17 +26,11 @@ func (u *UserService) GetUsers() ([]*entity.User, error) {
 	return u.userService.GetAllUsers()
 }
 
-func (u *UserService) CreateUser(name, email, password string) (*entity.User, error) {
-	user, err := u.userService.GetUserByAuth(email, password)
-	if user != nil {
-		return nil, errors.New("user is already exists")
-	} else if err != nil {
-		return nil, errors.New("email is duplicated")
-	}
-	return u.userService.CreateUser(name, email, password)
+func (u *UserService) Signup(user *entity.User) (*entity.User, error) {
+	return u.userService.Signup(user)
 }
 
-func (u *UserService) SignIn(email, password string) (string, error) {
+func (u *UserService) Signin(email *value.Email, password *value.Password) (string, error) {
 	user, err := u.userService.GetUserByAuth(email, password)
 	if err != nil {
 		return "", err
