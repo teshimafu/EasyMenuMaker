@@ -34,18 +34,30 @@ func (us *UserService) CreateUser(name, email, password string) (*entity.User, e
 	return us.repo.Create(user)
 }
 
-func (s *UserService) GetUser(id *valueobject.UserID) (*entity.User, error) {
-	return s.repo.FindByID(id)
+func (s *UserService) GetUser(id string) (*entity.User, error) {
+	userID, err := valueobject.NewUserID(id)
+	if err != nil {
+		return nil, err
+	}
+	return s.repo.FindByID(userID)
 }
 
-func (s *UserService) GetUserByAuth(email *valueobject.Email, password *valueobject.Password) (*entity.User, error) {
-	user, err := s.repo.FindByEmail(email)
+func (s *UserService) GetUserByAuth(email, password string) (*entity.User, error) {
+	userEmail, err := valueobject.NewEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	user, err := s.repo.FindByEmail(userEmail)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	} else if err != nil {
 		return nil, err
 	}
-	if err := password.ComparePassword(user.Password()); err != nil {
+	userPassword, err := valueobject.HashPassword(password)
+	if err != nil {
+		return nil, err
+	}
+	if err := userPassword.ComparePassword(user.Password()); err != nil {
 		return nil, err
 	}
 	return user, nil
