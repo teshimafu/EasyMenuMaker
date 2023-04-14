@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <h1>Welcome to the homepage</h1>
-    <AppAlert>
-      This is an auto-imported component
-    </AppAlert>
-  </div>
+  <div></div>
 </template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+router.push('/signup')
+</script>

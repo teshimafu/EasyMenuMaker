@@ -18,25 +18,33 @@ func NewUserPresenter() *UserPresenter {
 	return &UserPresenter{}
 }
 
+func (up *UserPresenter) ResponseCreatedUser(c echo.Context, user *entity.User) error {
+	if user == nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+
+	return c.JSON(http.StatusCreated, up.ToJson(user))
+}
+
 func (up *UserPresenter) ResponseUser(c echo.Context, user *entity.User) error {
 	if user == nil {
 		return c.NoContent(http.StatusNotFound)
 	}
 
-	return c.JSON(http.StatusOK, up.toJson(user))
+	return c.JSON(http.StatusOK, up.ToJson(user))
 }
 
 func (up *UserPresenter) ResponseUsers(c echo.Context, users []*entity.User) error {
 	usersJSON := make([]*User, len(users))
 	for i, user := range users {
-		user := up.toJson(user)
+		user := up.ToJson(user)
 		usersJSON[i] = user
 	}
 
 	return c.JSON(http.StatusOK, usersJSON)
 }
 
-func (up *UserPresenter) toJson(user *entity.User) *User {
+func (up *UserPresenter) ToJson(user *entity.User) *User {
 	if user == nil {
 		return nil
 	}

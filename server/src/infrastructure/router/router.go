@@ -1,7 +1,10 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/teshimafu/lazyPM/server/src/domain/factory"
 	domain_service "github.com/teshimafu/lazyPM/server/src/domain/service"
 	"github.com/teshimafu/lazyPM/server/src/infrastructure/auth"
@@ -37,10 +40,21 @@ func Init(e *echo.Echo, db *gorm.DB) {
 	userHandler := handler.NewUserHandler(userService, userPresenter)
 	authHandler := handler.NewAuthHandler(authService, userPresenter, userFactory)
 
+	// cors
+	e.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
+
+	// middleware
+	e.Use(echoMiddleware.Logger())
+	e.Use(echoMiddleware.Recover())
+	protected := e.Group("")
+	protected.Use(authMiddleware.Middleware)
+
 	e.POST("/signup", authHandler.PostSignup)
 	e.POST("/signin", authHandler.PostSignin)
 
-	protected := e.Group("")
-	protected.Use(authMiddleware.Middleware)
 	protected.GET("/users", userHandler.GetUsers)
 }
