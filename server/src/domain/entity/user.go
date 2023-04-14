@@ -9,7 +9,7 @@ type User struct {
 	password *value.Password
 }
 
-func NewUser(id, name, email string, password []byte) (*User, error) {
+func NewUser(id, name, email, password string) (*User, error) {
 	userID, err := value.NewUserID(id)
 	if err != nil {
 		return nil, err

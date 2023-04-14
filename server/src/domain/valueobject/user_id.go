@@ -1,7 +1,8 @@
 package valueobject
 
 import (
-	"github.com/google/uuid"
+	"errors"
+	"log"
 )
 
 type UserID struct {
@@ -10,7 +11,8 @@ type UserID struct {
 
 func NewUserID(value string) (*UserID, error) {
 	if value == "" {
-		value = uuid.New().String()
+		log.Fatalln("user id is broken")
+		return nil, errors.New("user id is broken")
 	}
 
 	return &UserID{value: value}, nil

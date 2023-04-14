@@ -2,51 +2,45 @@ package service
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/teshimafu/lazyPM/server/src/domain/entity"
-	"github.com/teshimafu/lazyPM/server/src/domain/factory"
 	"github.com/teshimafu/lazyPM/server/src/domain/repository"
-	"github.com/teshimafu/lazyPM/server/src/domain/valueobject"
+	value "github.com/teshimafu/lazyPM/server/src/domain/valueobject"
 	"gorm.io/gorm"
 )
 
+var (
+	ErrInvalidPassword = errors.New("invalid password")
+	ErrUserNotFound    = errors.New("user is not found")
+)
+
 type UserService struct {
-	repo    repository.IUserRepository
-	factory factory.UserFactory
+	repo repository.IUserRepository
 }
 
-func NewUserService(repo repository.IUserRepository, factory factory.UserFactory) *UserService {
+func NewUserService(repo repository.IUserRepository) *UserService {
 	return &UserService{
-		repo:    repo,
-		factory: factory,
+		repo: repo,
 	}
 }
 
-func (us *UserService) CreateUser(name, email, password string) (*entity.User, error) {
-	user, err := us.factory.CreateUser(name, email, password)
-	if err != nil {
-		return nil, err
-	}
-	if _, err := us.repo.Find(user); err == nil {
-		return nil, fmt.Errorf("user already exists")
-	}
+func (us *UserService) Signup(user *entity.User) (*entity.User, error) {
 	return us.repo.Create(user)
 }
 
-func (s *UserService) GetUser(id *valueobject.UserID) (*entity.User, error) {
+func (s *UserService) GetUser(id *value.UserID) (*entity.User, error) {
 	return s.repo.FindByID(id)
 }
 
-func (s *UserService) GetUserByAuth(email *valueobject.Email, password *valueobject.Password) (*entity.User, error) {
+func (s *UserService) GetUserByAuth(email *value.Email, password *value.Password) (*entity.User, error) {
 	user, err := s.repo.FindByEmail(email)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, ErrUserNotFound
 	} else if err != nil {
 		return nil, err
 	}
-	if err := password.ComparePassword(user.Password()); err != nil {
-		return nil, err
+	if err := user.Password().ComparePassword(password); err != nil {
+		return nil, ErrInvalidPassword
 	}
 	return user, nil
 }

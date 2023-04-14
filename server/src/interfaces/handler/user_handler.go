@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/teshimafu/lazyPM/server/src/domain/valueobject"
 	"github.com/teshimafu/lazyPM/server/src/interfaces/presenter"
 	"github.com/teshimafu/lazyPM/server/src/usecase/service"
 )
@@ -19,19 +18,6 @@ func NewUserHandler(userService *service.UserService, userPresenter *presenter.U
 		userService:   userService,
 		userPresenter: userPresenter,
 	}
-}
-
-func (h *UserHandler) GetUser(c echo.Context) error {
-	userID, err := valueobject.NewUserID(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
-	}
-	user, err := h.userService.GetUser(userID)
-	if err != nil {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "user is not found"})
-	}
-
-	return h.userPresenter.ResponseUser(c, user)
 }
 
 func (h *UserHandler) GetUsers(c echo.Context) error {
