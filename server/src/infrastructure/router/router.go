@@ -26,15 +26,16 @@ func Init(e *echo.Echo, db *gorm.DB) {
 	authDomainService := domain_service.NewAuthService(tokenGenerator)
 
 	// application service
-	userService := service.NewUserService(userDomainService, authDomainService)
+	userService := service.NewUserService(userDomainService)
+	authService := service.NewAuthService(userDomainService, authDomainService)
 
 	// presenter
 	userPresenter := presenter.NewUserPresenter()
 
 	// handler
-	authMiddleware := middleware.NewAuthMiddleware()
+	authMiddleware := middleware.NewAuthMiddleware(authService)
 	userHandler := handler.NewUserHandler(userService, userPresenter)
-	authHandler := handler.NewAuthHandler(userService, userPresenter, userFactory)
+	authHandler := handler.NewAuthHandler(authService, userPresenter, userFactory)
 
 	e.POST("/signup", authHandler.PostSignup)
 	e.POST("/signin", authHandler.PostSignin)

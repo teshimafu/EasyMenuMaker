@@ -22,14 +22,14 @@ type SigninForm struct {
 }
 
 type AuthHandler struct {
-	userService   *service.UserService
+	authService   *service.AuthService
 	userPresenter *presenter.UserPresenter
 	userFactory   factory.UserFactory
 }
 
-func NewAuthHandler(userService *service.UserService, userPresenter *presenter.UserPresenter, userFactory factory.UserFactory) *AuthHandler {
+func NewAuthHandler(authService *service.AuthService, userPresenter *presenter.UserPresenter, userFactory factory.UserFactory) *AuthHandler {
 	return &AuthHandler{
-		userService:   userService,
+		authService:   authService,
 		userPresenter: userPresenter,
 		userFactory:   userFactory,
 	}
@@ -45,7 +45,7 @@ func (a *AuthHandler) PostSignup(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	createdUser, err := a.userService.Signup(user)
+	createdUser, err := a.authService.Signup(user)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
@@ -67,7 +67,7 @@ func (a *AuthHandler) PostSignin(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	token, err := a.userService.Signin(email, password)
+	token, err := a.authService.Signin(email, password)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, err)
 	}
