@@ -1,12 +1,14 @@
 {
-  "name": "lazy-pm",
+  "name": "nuxt-app",
+  "private": true,
   "scripts": {
-    "dev": "nuxt",
     "build": "nuxt build",
+    "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "start": "nuxt start"
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
-  "dependencies": {
-    "nuxt": "^3.3.3"
+  "devDependencies": {
+    "nuxt": "^3.4.1"
   }
 }
