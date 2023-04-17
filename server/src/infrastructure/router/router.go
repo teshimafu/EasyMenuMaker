@@ -2,6 +2,7 @@ package router
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
@@ -42,7 +43,7 @@ func Init(e *echo.Echo, db *gorm.DB) {
 
 	// cors
 	e.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:3000"},
+		AllowOrigins: []string{os.Getenv("FRONT_URL")},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))

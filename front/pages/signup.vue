@@ -26,6 +26,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios, { AxiosError } from 'axios'
+import apiClient from '@/api/apiClient'
 
 const name = ref('')
 const email = ref('')
@@ -36,7 +37,7 @@ const router = useRouter()
 
 async function signup() {
   try {
-    const response = await axios.post('http://localhost:8080/signup', {
+    const response = await apiClient.post('/signup', {
       name: name.value,
       email: email.value,
       password: password.value
