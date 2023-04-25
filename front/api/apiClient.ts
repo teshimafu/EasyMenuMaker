@@ -18,7 +18,16 @@ export const useCustomFetch: typeof useFetch = (path, options) => {
       Authorization: `Bearer ${token}`
     })
   }
-  return useFetch(path, { baseURL: config.public.baseURL, ...options })
+  return useFetch(path, {
+    baseURL: config.public.baseURL,
+    ...options,
+    async onResponseError({ response }) {
+      console.error(response.status, response.statusText)
+      if (response.status === 401) {
+        localStorage.setItem('accessToken', '')
+      }
+    }
+  })
 }
 
 export default useCustomFetch
