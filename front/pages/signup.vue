@@ -25,8 +25,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios, { AxiosError } from 'axios'
-import apiClient from '@/api/apiClient'
+import useCustomFetch from '@/api/apiClient'
 
 const name = ref('')
 const email = ref('')
@@ -35,30 +34,22 @@ const errorMessage = ref('')
 
 const router = useRouter()
 
-async function signup() {
-  try {
-    const response = await apiClient.post('/signup', {
+const signup = async () => {
+  const response = await useCustomFetch('signup', {
+    method: 'POST',
+    body: {
       name: name.value,
       email: email.value,
       password: password.value
-    })
-
-    switch (response.status) {
-      case 201:
-        router.push('/home')
-        return
-      default:
-        errorMessage.value = 'Unknown error'
-        return
     }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<{ message: string }>
-      console.error('Error:', axiosError.response?.data.message)
-      errorMessage.value = axiosError.response?.data.message ?? 'Unknown error'
-    } else {
-      console.error('Unknown error:', error)
-    }
+  })
+  if (response.data.value) {
+    router.push('/home')
+    return
+  }
+  if (response.error.value) {
+    errorMessage.value = response.error.value.data.message
+    return
   }
 }
 </script>
