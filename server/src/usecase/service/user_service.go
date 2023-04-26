@@ -1,25 +1,27 @@
 package service
 
 import (
-	"github.com/teshimafu/lazyPM/server/src/domain/entity"
 	"github.com/teshimafu/lazyPM/server/src/domain/service"
-	value "github.com/teshimafu/lazyPM/server/src/domain/valueobject"
+	"github.com/teshimafu/lazyPM/server/src/usecase/converter"
+	"github.com/teshimafu/lazyPM/server/src/usecase/view"
 )
 
 type UserService struct {
-	userService *service.UserService
+	userService   *service.UserService
+	userConverter *converter.UserConverter
 }
 
-func NewUserService(userService *service.UserService) *UserService {
+func NewUserService(userService *service.UserService, userConverter *converter.UserConverter) *UserService {
 	return &UserService{
-		userService: userService,
+		userService:   userService,
+		userConverter: userConverter,
 	}
 }
 
-func (u *UserService) GetUser(id *value.UserID) (*entity.User, error) {
-	return u.userService.GetUser(id)
-}
-
-func (u *UserService) GetUsers() ([]*entity.User, error) {
-	return u.userService.GetAllUsers()
+func (u *UserService) GetUsers() ([]*view.User, error) {
+	user, err := u.userService.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+	return u.userConverter.ResponseUsers(user), nil
 }

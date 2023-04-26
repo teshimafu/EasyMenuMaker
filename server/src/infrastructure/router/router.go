@@ -13,6 +13,7 @@ import (
 	"github.com/teshimafu/lazyPM/server/src/interfaces/handler"
 	"github.com/teshimafu/lazyPM/server/src/interfaces/middleware"
 	"github.com/teshimafu/lazyPM/server/src/interfaces/presenter"
+	"github.com/teshimafu/lazyPM/server/src/usecase/converter"
 	"github.com/teshimafu/lazyPM/server/src/usecase/service"
 	"gorm.io/gorm"
 )
@@ -25,13 +26,16 @@ func Init(e *echo.Echo, db *gorm.DB) {
 	// factory
 	userFactory := factory.NewUserFactory(userTable)
 
+	// converter
+	userConverter := converter.NewUserConverter()
+
 	// domain service
 	userDomainService := domain_service.NewUserService(userTable)
 	authDomainService := domain_service.NewAuthService(tokenGenerator)
 
 	// application service
-	userService := service.NewUserService(userDomainService)
-	authService := service.NewAuthService(userDomainService, authDomainService)
+	userService := service.NewUserService(userDomainService, userConverter)
+	authService := service.NewAuthService(userDomainService, authDomainService, userFactory, userConverter)
 
 	// presenter
 	userPresenter := presenter.NewUserPresenter()
@@ -39,7 +43,7 @@ func Init(e *echo.Echo, db *gorm.DB) {
 	// handler
 	authMiddleware := middleware.NewAuthMiddleware(authService)
 	userHandler := handler.NewUserHandler(userService, userPresenter)
-	authHandler := handler.NewAuthHandler(authService, userPresenter, userFactory)
+	authHandler := handler.NewAuthHandler(authService, userPresenter)
 
 	// cors
 	e.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
