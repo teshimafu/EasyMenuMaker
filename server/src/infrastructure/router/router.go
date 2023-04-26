@@ -61,5 +61,6 @@ func Init(e *echo.Echo, db *gorm.DB) {
 	e.POST("/signup", authHandler.PostSignup)
 	e.POST("/signin", authHandler.PostSignin)
 
+	protected.GET("/me", userHandler.GetMe)
 	protected.GET("/users", userHandler.GetUsers)
 }

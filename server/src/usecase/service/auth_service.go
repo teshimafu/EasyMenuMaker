@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/teshimafu/lazyPM/server/src/domain/factory"
 	"github.com/teshimafu/lazyPM/server/src/domain/service"
 	value "github.com/teshimafu/lazyPM/server/src/domain/valueobject"
@@ -24,8 +26,16 @@ func NewAuthService(userService *service.UserService, authService *service.AuthS
 	}
 }
 
-func (u *AuthService) GetUserID(token *value.Token) (*value.UserID, error) {
-	return u.authService.GetUserID(token)
+func (u *AuthService) GetUserID(rawToken string) (string, error) {
+	token, err := value.NewToken(rawToken)
+	if err != nil {
+		return "", errors.New("invalid token")
+	}
+	id, err := u.authService.GetUserID(token)
+	if err != nil {
+		return "nil", err
+	}
+	return id.Value(), nil
 }
 
 func (u *AuthService) Signup(form *view.SignupForm) (*view.User, error) {

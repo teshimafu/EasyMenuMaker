@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	"github.com/teshimafu/lazyPM/server/src/domain/valueobject"
 	"github.com/teshimafu/lazyPM/server/src/usecase/service"
 )
 
@@ -30,16 +29,12 @@ func (a *AuthMiddleware) Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 		if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
 			return echo.NewHTTPError(http.StatusUnauthorized, "invalid Authorization header format")
 		}
-		token, err := valueobject.NewToken(parts[1])
-		if err != nil {
-			return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
-		}
 
-		userID, err := a.authService.GetUserID(token)
+		userID, err := a.authService.GetUserID(parts[1])
 		if err != nil {
 			return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
 		}
-		c.Set("user_id", userID.Value())
+		c.Set("user_id", userID)
 		return next(c)
 	}
 }

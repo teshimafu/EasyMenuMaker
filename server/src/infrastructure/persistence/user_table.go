@@ -21,7 +21,7 @@ func NewUserTable(db *gorm.DB) repository.IUserRepository {
 
 func (ut *userTable) FindByID(id *value.UserID) (*entity.User, error) {
 	var user *model.User
-	if err := ut.db.Where("user_id = ?", id.Buffer()).First(&user).Error; err != nil {
+	if err := ut.db.Where("user_id = ?", id.Value()).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return toUserEntity(user)
