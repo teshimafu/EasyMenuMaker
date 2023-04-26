@@ -1,18 +1,26 @@
 <script setup lang="ts">
-const { currentUser, signin } = useAuth()
-let isLoading = ref(false)
+definePageMeta({
+  layout: 'signin'
+})
+const router = useRouter()
+const { signin } = useAuth()
+const isLoading = ref(false)
 const email = ref('')
 const password = ref('')
 
 const userLogin = async () => {
-  isLoading.value = true
-  const { pending } = signin(email.value, password.value)
+  const { pending, error } = signin(email.value, password.value)
   watchEffect(() => {
+    isLoading.value = pending.value
     if (!pending.value) {
-      isLoading.value = false
+      if (error.value) {
+        isLoading.value = false
+        alert(error.value.message)
+      } else {
+        router.push('/home')
+      }
     }
   })
-  console.log(pending.value)
 }
 </script>
 

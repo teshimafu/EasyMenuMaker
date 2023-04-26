@@ -9,6 +9,21 @@ export const useAuth = () => {
     email: undefined
   }))
 
+  const signup = async (args: {
+    name: string
+    email: string
+    password: string
+  }) => {
+    return useCustomFetch('signup', {
+      method: 'POST',
+      body: {
+        name: args.name,
+        email: args.email,
+        password: args.password
+      }
+    })
+  }
+
   const signin = (email: string, password: string) => {
     const { data, error, pending } = useCustomFetch('signin', {
       method: 'POST',
@@ -29,6 +44,7 @@ export const useAuth = () => {
   }
   return {
     currentUser,
+    signup,
     signin,
     signout
   }

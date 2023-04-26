@@ -1,7 +1,37 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+definePageMeta({
+  layout: 'signin'
+})
+const name = ref('')
+const email = ref('')
+const password = ref('')
+const errorMessage = ref('')
+
+const router = useRouter()
+const { signup } = useAuth()
+
+const onSignup = async () => {
+  const response = await signup({
+    name: name.value,
+    email: email.value,
+    password: password.value
+  })
+  if (response.data.value) {
+    router.push('/home')
+    return
+  }
+  if (response.error.value) {
+    errorMessage.value = response.error.value.data.message
+    return
+  }
+}
+</script>
+
 <template>
   <div>
-    <h1>Signup</h1>
-    <form @submit.prevent="signup">
+    <form @submit.prevent="onSignup">
       <div>
         <label for="name">Name:</label>
         <input type="text" id="name" v-model="name" />
@@ -21,35 +51,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import useCustomFetch from '@/api/apiClient'
-
-const name = ref('')
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
-
-const router = useRouter()
-
-const signup = async () => {
-  const response = await useCustomFetch('signup', {
-    method: 'POST',
-    body: {
-      name: name.value,
-      email: email.value,
-      password: password.value
-    }
-  })
-  if (response.data.value) {
-    router.push('/home')
-    return
-  }
-  if (response.error.value) {
-    errorMessage.value = response.error.value.data.message
-    return
-  }
-}
-</script>
