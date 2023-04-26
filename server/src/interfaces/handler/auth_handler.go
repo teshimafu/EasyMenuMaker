@@ -4,57 +4,40 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/teshimafu/lazyPM/server/src/domain/factory"
 	"github.com/teshimafu/lazyPM/server/src/domain/valueobject"
 	"github.com/teshimafu/lazyPM/server/src/interfaces/presenter"
 	"github.com/teshimafu/lazyPM/server/src/usecase/service"
+	"github.com/teshimafu/lazyPM/server/src/usecase/view"
 )
-
-type SignupForm struct {
-	Name     string `json:"name" validate:"required"`
-	Email    string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"required"`
-}
-
-type SigninForm struct {
-	Email    string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"required"`
-}
 
 type AuthHandler struct {
 	authService   *service.AuthService
 	userPresenter *presenter.UserPresenter
-	userFactory   factory.UserFactory
 }
 
-func NewAuthHandler(authService *service.AuthService, userPresenter *presenter.UserPresenter, userFactory factory.UserFactory) *AuthHandler {
+func NewAuthHandler(authService *service.AuthService, userPresenter *presenter.UserPresenter) *AuthHandler {
 	return &AuthHandler{
 		authService:   authService,
 		userPresenter: userPresenter,
-		userFactory:   userFactory,
 	}
 }
 
 func (a *AuthHandler) PostSignup(c echo.Context) error {
-	userCmd := &SignupForm{}
+	userCmd := &view.SignupForm{}
 	if err := c.Bind(userCmd); err != nil {
 		return err
 	}
-	user, err := a.userFactory.CreateUser(userCmd.Name, userCmd.Email, userCmd.Password)
+
+	createdUser, err := a.authService.Signup(userCmd)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 	}
 
-	createdUser, err := a.authService.Signup(user)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
-	}
-
-	return c.JSON(http.StatusCreated, a.userPresenter.ToJson(createdUser))
+	return a.userPresenter.ResponseCreatedUser(c, createdUser)
 }
 
 func (a *AuthHandler) PostSignin(c echo.Context) error {
-	req := &SigninForm{}
+	req := &view.SigninForm{}
 	if err := c.Bind(req); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}

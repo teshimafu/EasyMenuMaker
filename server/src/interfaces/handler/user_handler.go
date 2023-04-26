@@ -20,6 +20,16 @@ func NewUserHandler(userService *service.UserService, userPresenter *presenter.U
 	}
 }
 
+func (h *UserHandler) GetMe(c echo.Context) error {
+	userID := c.Get("user_id").(string)
+	user, err := h.userService.GetUser(userID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "internal server error"})
+	}
+
+	return h.userPresenter.ResponseUser(c, user)
+}
+
 func (h *UserHandler) GetUsers(c echo.Context) error {
 	users, err := h.userService.GetUsers()
 	if err != nil {
