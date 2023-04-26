@@ -42,15 +42,15 @@ func (a *AuthHandler) PostSignup(c echo.Context) error {
 	}
 	user, err := a.userFactory.CreateUser(userCmd.Name, userCmd.Email, userCmd.Password)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 	}
 
 	createdUser, err := a.authService.Signup(user)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 	}
 
-	return a.userPresenter.ResponseUser(c, createdUser)
+	return c.JSON(http.StatusCreated, a.userPresenter.ToJson(createdUser))
 }
 
 func (a *AuthHandler) PostSignin(c echo.Context) error {

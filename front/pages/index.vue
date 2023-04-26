@@ -1,3 +1,9 @@
 <template>
-  <h1>Hello world!</h1>
+  <div></div>
 </template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+const router = useRouter()
+router.push('/signin')
+</script>

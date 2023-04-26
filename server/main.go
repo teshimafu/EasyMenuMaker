@@ -9,7 +9,6 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/teshimafu/lazyPM/server/migrations"
 	"github.com/teshimafu/lazyPM/server/src/infrastructure/router"
 )
@@ -33,10 +32,6 @@ func main() {
 	}
 
 	e := echo.New()
-
-	// middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
 
 	// initialize router
 	router.Init(e, db)
