@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <v-app>
     <SigninHeader />
-    <slot />
+    <v-main>
+      <slot />
+    </v-main>
     <AppFooter />
-  </div>
+  </v-app>
 </template>
