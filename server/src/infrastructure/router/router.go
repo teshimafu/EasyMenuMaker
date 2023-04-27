@@ -49,12 +49,13 @@ func Init(e *echo.Echo, db *gorm.DB) {
 	e.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
 		AllowOrigins: []string{os.Getenv("FRONT_URL")},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 	}))
 
 	// middleware
 	e.Use(echoMiddleware.Logger())
 	e.Use(echoMiddleware.Recover())
+
 	protected := e.Group("")
 	protected.Use(authMiddleware.Middleware)
 
