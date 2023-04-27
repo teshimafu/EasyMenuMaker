@@ -1,13 +1,11 @@
 <template>
   <div>
-    <label for="name">Name:{{ name }}</label>
+    <label for="name">Name:{{ currentUser.name }}</label>
   </div>
 </template>
 
 <script setup lang="ts">
-interface Props {
-  name: string
-}
+import { useAuth } from '@/composables/useAuth'
 
-defineProps<Props>()
+const { currentUser } = useAuth()
 </script>

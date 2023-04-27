@@ -1,26 +1,24 @@
 <script setup lang="ts">
+import { useAuth } from '@/composables/useAuth'
 definePageMeta({
   layout: 'signin'
 })
 const router = useRouter()
-const { signin } = useAuth()
+const { signin, me } = useAuth()
 const isLoading = ref(false)
 const email = ref('')
 const password = ref('')
 
 const userLogin = async () => {
-  const { pending, error } = signin(email.value, password.value)
-  watchEffect(() => {
-    isLoading.value = pending.value
-    if (!pending.value) {
-      if (error.value) {
-        isLoading.value = false
-        alert(error.value.message)
-      } else {
-        router.push('/home')
-      }
-    }
-  })
+  isLoading.value = true
+  const { error } = await signin(email.value, password.value)
+  isLoading.value = false
+  if (error.value) {
+    alert(error.value.message)
+  } else {
+    await me()
+    router.push('/home')
+  }
 }
 </script>
 
