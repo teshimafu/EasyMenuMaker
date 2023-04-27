@@ -24,28 +24,39 @@ export const useAuth = () => {
     })
   }
 
-  const signin = (email: string, password: string) => {
-    const { data, error, pending } = useCustomFetch('signin', {
+  const signin = async (email: string, password: string) => {
+    const { data, error } = await useCustomFetch('signin', {
       method: 'POST',
       body: { email, password },
       default: () => ({ token: '' })
     })
-    watchEffect(() => {
-      currentUser.value.email = data.value?.token
-      currentUser.value.name = data.value?.token
-      console.log(currentUser.value)
+    if (data.value?.token) {
+      localStorage.setItem('accessToken', data.value.token)
+    }
+    return { currentUser, error }
+  }
+
+  const me = async () => {
+    const { data, error } = await useCustomFetch('me', {
+      method: 'GET',
+      default: () => ({ id: '', name: '', email: '' })
     })
-    console.log(data)
-    return { currentUser, error, pending }
+    if (data.value?.id) {
+      currentUser.value.email = data.value.email
+      currentUser.value.name = data.value.name
+    }
+    return { data, error }
   }
 
   const signout = () => async () => {
+    localStorage.setItem('accessToken', '')
     currentUser.value = { name: undefined, email: undefined }
   }
   return {
     currentUser,
     signup,
     signin,
+    me,
     signout
   }
 }
