@@ -1,6 +1,7 @@
 import useCustomFetch from '@/api/apiClient'
 
 export const useAuth = () => {
+  const router = useRouter()
   const currentUser = useState<{
     name: string | undefined
     email: string | undefined
@@ -48,9 +49,10 @@ export const useAuth = () => {
     return { data, error }
   }
 
-  const signout = () => async () => {
+  const signout = async () => {
     localStorage.setItem('accessToken', '')
     currentUser.value = { name: undefined, email: undefined }
+    router.push('/signin')
   }
   return {
     currentUser,
