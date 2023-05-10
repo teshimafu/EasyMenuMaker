@@ -1,9 +1,11 @@
 <template>
-  <div>
+  <v-app>
     <AppHeader name="test" />
-    <slot />
+    <v-main>
+      <slot />
+    </v-main>
     <AppFooter />
-  </div>
+  </v-app>
 </template>
 
 <script setup lang="ts"></script>
